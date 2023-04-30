@@ -5,7 +5,7 @@
 
 ***You can Install latest app from below***
 
-[![Compose Gallery App](https://img.shields.io/badge/QuickAccess-APK-blue.svg?style=for-the-badge&logo=android&color=blue)](https://github.com/Patil-Tanmay/Compose-Gallery/releases/download/v1.0/ComposeGallery.apk)
+[![Compose Gallery App](https://img.shields.io/badge/ComposeGallery-APK-blue.svg?style=for-the-badge&logo=android&color=blue)](https://github.com/Patil-Tanmay/Compose-Gallery/releases/download/v1.0/ComposeGallery.apk)
 
 ## Built With 🛠
 - [Kotlin](https://kotlinlang.org/) - First class and official programming language for Android development.
