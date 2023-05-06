@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -22,7 +23,7 @@ import com.tanmay.composegallery.GalleryViewModel
 import com.tanmay.composegallery.data.model.PhotoItem
 
 @Composable
-fun PagingListScreen(viewModel: GalleryViewModel = hiltViewModel(), onPhotoClick: () -> Unit) {
+fun PagingListScreen(photos: LazyPagingItems<PhotoItem>, viewModel: GalleryViewModel = hiltViewModel(), onPhotoClick: (index : Int) -> Unit) {
 
     val isRefreshing by viewModel.isRefreshing.collectAsState()
 
@@ -42,7 +43,7 @@ fun PagingListScreen(viewModel: GalleryViewModel = hiltViewModel(), onPhotoClick
                 }
 
                 else -> {
-                    val photos = viewModel.getPhotos().collectAsLazyPagingItems()
+//                    val photos = viewModel.getPhotos().collectAsLazyPagingItems()
                     LazyVerticalGrid(
                         modifier = Modifier.padding(it),
                         state = pagingScrollState,
@@ -55,7 +56,9 @@ fun PagingListScreen(viewModel: GalleryViewModel = hiltViewModel(), onPhotoClick
                                     image = photo,
                                     modifier = Modifier.padding(4.dp),
                                     viewModel = viewModel,
-                                    onPhotoClick
+                                    onPhotoClick = {
+                                        onPhotoClick(index)
+                                    }
                                 )
                             }
                         }

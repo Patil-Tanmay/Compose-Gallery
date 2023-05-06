@@ -33,8 +33,8 @@ fun SplashScreen(onFinished: () -> Unit) = Box(
     LaunchedEffect(key1 = true) {
         scale.animateTo(
             targetValue = 0.7f,
-            animationSpec = tween(800, easing = {
-                OvershootInterpolator(4f).getInterpolation(it)
+            animationSpec = tween(1000, easing = {
+                OvershootInterpolator(6f).getInterpolation(it)
             })
         )
         delay(1000)

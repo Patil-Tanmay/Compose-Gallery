@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.tanmay.composegallery.screens.ErrorScreen
 import com.tanmay.composegallery.utils.PermissionCheck
 import com.tanmay.composegallery.screens.PagingListScreen
@@ -44,14 +45,14 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val showPhotoState by viewModel.showPhotos.collectAsState()
-                    val expandDetailsCard = remember { mutableStateOf(false) }
+                    val expandDetailsCard = remember { mutableStateOf(ExpandableState(0,false)) }
 
                     // detect back press
                     LaunchedEffect(key1 = backPressDispatcher) {
                         val callback = object : OnBackPressedCallback(true) {
                             override fun handleOnBackPressed() {
-                                if (expandDetailsCard.value) {
-                                    expandDetailsCard.value = false
+                                if (expandDetailsCard.value.isExpanded) {
+                                    expandDetailsCard.value = expandDetailsCard.value.copy(isExpanded = false)
                                 } else {
                                     // exit the app
                                     finish()
@@ -72,13 +73,17 @@ class MainActivity : ComponentActivity() {
                         }
 
                         ShowPhotoStates.Gallery -> {
-                            PagingListScreen(viewModel) {
-                                expandDetailsCard.value = true
+                            val photos = viewModel.getPhotos().collectAsLazyPagingItems()
+                            PagingListScreen(photos, viewModel) {index ->
+                                expandDetailsCard.value = expandDetailsCard.value.copy(index = index,isExpanded = true)
                             }
                             PhotoDetailsScreen(
-                                viewModel, onBackPressed = {
-                                    expandDetailsCard.value = false
-                                }, expandableState = expandDetailsCard
+                                photos = photos,
+                                viewModel = viewModel,
+                                onBackPressed = {
+                                    expandDetailsCard.value = expandDetailsCard.value.copy(isExpanded = false)
+                                },
+                                expandableState = expandDetailsCard
                             )
                         }
 
@@ -115,6 +120,11 @@ class MainActivity : ComponentActivity() {
             }
         }
 }
+
+data class ExpandableState(
+    val index: Int = 0,
+    val isExpanded: Boolean = false
+)
 
 @Composable
 fun LoadingIndicator() {
