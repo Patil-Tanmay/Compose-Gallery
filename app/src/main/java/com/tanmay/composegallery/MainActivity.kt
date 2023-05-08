@@ -79,7 +79,7 @@ class MainActivity : ComponentActivity() {
                             }
                             PhotoDetailsScreen(
                                 photos = photos,
-                                viewModel = viewModel,
+//                                viewModel = viewModel,
                                 onBackPressed = {
                                     expandDetailsCard.value = expandDetailsCard.value.copy(isExpanded = false)
                                 },
@@ -93,7 +93,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         ShowPhotoStates.SplashScreen -> {
-                            SplashScreen() {
+                            SplashScreen {
                                 viewModel.updatePhotoState(ShowPhotoStates.Loading)
                             }
                         }

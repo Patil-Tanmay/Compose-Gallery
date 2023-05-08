@@ -3,6 +3,7 @@ package com.tanmay.composegallery.di
 import android.content.Context
 import androidx.room.Room
 import com.tanmay.composegallery.data.db.GalleryDatabase
+import com.tanmay.composegallery.data.paging.SystemPhotosDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,5 +24,11 @@ object GalleryPagingSourceModule {
     @Singleton
     fun provideGalleryDatabase(@ApplicationContext context: Context): GalleryDatabase {
         return Room.databaseBuilder(context, GalleryDatabase::class.java, "GalleryDatabase").build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSystemPhotosDataSource(@ApplicationContext context: Context): SystemPhotosDataSource {
+        return SystemPhotosDataSource(context)
     }
 }

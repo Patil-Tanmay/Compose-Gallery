@@ -55,7 +55,7 @@ fun PagingListScreen(photos: LazyPagingItems<PhotoItem>, viewModel: GalleryViewM
                                 ImageCard(
                                     image = photo,
                                     modifier = Modifier.padding(4.dp),
-                                    viewModel = viewModel,
+//                                    viewModel = viewModel,
                                     onPhotoClick = {
                                         onPhotoClick(index)
                                     }
@@ -74,7 +74,6 @@ fun PagingListScreen(photos: LazyPagingItems<PhotoItem>, viewModel: GalleryViewM
 fun ImageCard(
     image: PhotoItem,
     modifier: Modifier = Modifier,
-    viewModel: GalleryViewModel = hiltViewModel(),
     onPhotoClick: () -> Unit
 ) {
     Card(
@@ -82,7 +81,7 @@ fun ImageCard(
         shape = RoundedCornerShape(8.dp),
         elevation = 4.dp,
         onClick = {
-            viewModel.updatePhotoUri(image)
+//            viewModel.updatePhotoUri(image)
             onPhotoClick()
         }
     ) {

@@ -1,17 +1,13 @@
 package com.tanmay.composegallery
 
-import android.app.Application
-import android.content.ContentUris
-import android.provider.MediaStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import androidx.room.withTransaction
 import com.tanmay.composegallery.data.db.GalleryDatabase
-import com.tanmay.composegallery.data.model.PhotoItem
 import com.tanmay.composegallery.data.paging.GalleryPagingSource
+import com.tanmay.composegallery.data.repository.GalleryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GalleryViewModel @Inject constructor(
-    private val app: Application,
+    private val repository: GalleryRepository,
     private val db: GalleryDatabase
 ) : ViewModel() {
 
@@ -31,12 +27,6 @@ class GalleryViewModel @Inject constructor(
         MutableStateFlow(ShowPhotoStates.SplashScreen)
     val showPhotos: StateFlow<ShowPhotoStates> = _showPhotos.asStateFlow()
 
-    var photoItem: PhotoItem? = null
-        private set
-
-    fun updatePhotoUri(value: PhotoItem) {
-        photoItem = value
-    }
     fun updatePhotoState(value: ShowPhotoStates) {
         _showPhotos.value = value
     }
@@ -53,7 +43,28 @@ class GalleryViewModel @Inject constructor(
 
     suspend fun getPhotosFromSystem() {
         _isRefreshing.value = true
-            val projection = arrayOf(MediaStore.Images.Media._ID, MediaStore.Images.Media.DISPLAY_NAME)
+        try {
+            val photos = repository.getPhotosFromSystem()
+            if (photos.isNotEmpty()) {
+                updatePhotoState(ShowPhotoStates.Gallery)
+            } else {
+                updatePhotoState(ShowPhotoStates.PermissionDenied)
+            }
+        } catch (e: Exception) {
+            // Handle error
+            updatePhotoState(ShowPhotoStates.PermissionDenied)
+        } finally {
+            _isRefreshing.value = false
+        }
+    }
+
+
+    /*suspend fun getPhotosFromSystem() {
+        withContext(Dispatchers.IO) {
+        Log.i("Threads", Thread.currentThread().name)
+            _isRefreshing.value = true
+            val projection =
+                arrayOf(MediaStore.Images.Media._ID, MediaStore.Images.Media.DISPLAY_NAME)
             val sortOrder = "${MediaStore.Images.Media._ID} DESC"
             val query = MediaStore.Images.Media.EXTERNAL_CONTENT_URI.buildUpon().build()
 
@@ -61,7 +72,8 @@ class GalleryViewModel @Inject constructor(
             app.applicationContext.contentResolver.query(query, projection, null, null, sortOrder)
                 ?.use { cursor ->
                     val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-                    val nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
+                    val nameColumn =
+                        cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
                     while (cursor.moveToNext()) {
                         val id = cursor.getLong(idColumn)
                         val name = cursor.getString(nameColumn)
@@ -89,7 +101,11 @@ class GalleryViewModel @Inject constructor(
                     false
                 }
             }
-    }
+        }
+    }*/
+
+
+
 }
 
 enum class ShowPhotoStates {

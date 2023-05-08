@@ -25,12 +25,10 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.LazyPagingItems
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.tanmay.composegallery.ExpandableState
-import com.tanmay.composegallery.GalleryViewModel
 import com.tanmay.composegallery.data.model.PhotoItem
 import kotlin.math.absoluteValue
 import kotlin.math.sqrt
@@ -41,7 +39,6 @@ import kotlin.math.sqrt
 @Composable
 fun PhotoDetailsScreen(
     photos: LazyPagingItems<PhotoItem>,
-    viewModel: GalleryViewModel = hiltViewModel(),
     onBackPressed: () -> Unit,
     expandableState: MutableState<ExpandableState>
 ) {
@@ -97,10 +94,10 @@ fun PhotoDetailsScreen(
                         clip = true
 
                         val absoluteOffset = pagerState.offsetForPage(page).absoluteValue
-                        val scale = 1f + (absoluteOffset.absoluteValue * .4f)
+                        val currentScale = 1f + (absoluteOffset.absoluteValue * .4f)
 
-                        scaleX = scale
-                        scaleY = scale
+                        scaleX = currentScale
+                        scaleY = currentScale
 
                         val startOffset = pagerState.startOffsetForPage(page)
                         alpha = (2f - startOffset) / 2f
