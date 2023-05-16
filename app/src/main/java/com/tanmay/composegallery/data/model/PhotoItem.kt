@@ -8,7 +8,14 @@ import androidx.room.PrimaryKey
 data class PhotoItem(
     @PrimaryKey(autoGenerate = true) public var id: Int ?= null,
     var uri : String ? = "",
-    var displayName: String?= ""
+    var displayName: String?= "",
+    val folderName : String?= ""
 ){
 //    constructor() : this(0, "", "")
 }
+
+data class FolderAndPhotos(
+    val photos: List<PhotoItem>,
+    val folders: List<GalleryItem>
+)
+
