@@ -1,5 +1,7 @@
 package com.tanmay.composegallery.screens
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ErrorScreen() {
+fun ErrorScreen(requiredActivity: Activity) {
     Scaffold(
         topBar = {
             TopAppBar(

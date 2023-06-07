@@ -20,7 +20,7 @@ class SystemPhotosDataSource constructor(
                     MediaStore.Images.Media._ID, MediaStore.Images.Media.DISPLAY_NAME,
                     MediaStore.Images.Media.BUCKET_ID,
                     MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-                    "COUNT(*) AS IMAGE_COUNT"
+//                    "COUNT(*) AS IMAGE_COUNT"
                 )
 
             val sortOrder = "${MediaStore.Images.Media._ID} DESC"
@@ -35,26 +35,26 @@ class SystemPhotosDataSource constructor(
                         cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
                     while (cursor.moveToNext()) {
                         val id = cursor.getLong(idColumn)
+
                         val name = cursor.getString(nameColumn)
+
                         val contentUri =
-                            ContentUris.withAppendedId(
-                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                                id
-                            )
+                            ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
 
-                        val folderId =
-                            cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_ID))
-                        val folderName =
-                            cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME))
-                        val imageCount = cursor.getInt(cursor.getColumnIndexOrThrow("IMAGE_COUNT"))
+//                        val folderId =
+//                            cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_ID))
+//
+//                        val folderName =
+//                            cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME))
+//                        val imageCount = cursor.getInt(cursor.getColumnIndexOrThrow("IMAGE_COUNT"))
 
-                        folderList.add(GalleryItem(folderId, folderName, imageCount))
+//                        folderList.add(GalleryItem(folderId, folderName, 0))
 
                         images.add(
                             PhotoItem(
                                 uri = contentUri.toString(),
-                                displayName = name,
-                                folderName = folderName
+                                displayName = name
+//                                folderName = folderName
                             )
                         )
                     }

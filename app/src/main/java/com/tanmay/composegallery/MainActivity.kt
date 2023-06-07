@@ -1,6 +1,7 @@
 package com.tanmay.composegallery
 
 import android.os.Bundle
+import android.util.Log
 import android.view.animation.OvershootInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
@@ -38,8 +39,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposeGalleryTheme {
-                val backPressDispatcher =
-                    LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
@@ -47,6 +46,9 @@ class MainActivity : ComponentActivity() {
                     val showPhotoState by viewModel.showPhotos.collectAsState()
                     val expandDetailsCard = remember { mutableStateOf(ExpandableState(0,false)) }
 
+
+                    val backPressDispatcher =
+                        LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
                     // detect back press
                     LaunchedEffect(key1 = backPressDispatcher) {
                         val callback = object : OnBackPressedCallback(true) {
@@ -89,7 +91,7 @@ class MainActivity : ComponentActivity() {
 
                         ShowPhotoStates.PermissionDenied -> {
                             permissionCheck.showPermissionDialog()
-                            ErrorScreen()
+                            ErrorScreen(this)
                         }
 
                         ShowPhotoStates.SplashScreen -> {
@@ -99,6 +101,18 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d("TAGG", "onResume: called")
+        if(viewModel.showPhotos.value == ShowPhotoStates.PermissionDenied) {
+            if (permissionCheck.checkStoragePermission()) {
+//            LaunchedEffect(Unit) {
+                viewModel.getPhotosFromSystem()
+//            }
             }
         }
     }
@@ -114,7 +128,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 else -> {
-                    permissionCheck.showPermissionDialog()
+//                    permissionCheck.showPermissionDialog()
                     viewModel.updatePhotoState(ShowPhotoStates.PermissionDenied)
                 }
             }
