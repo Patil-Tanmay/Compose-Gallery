@@ -1,7 +1,7 @@
 package com.tanmay.composegallery.data.db
 
 import androidx.room.*
-import com.tanmay.composegallery.data.model.GalleryItem
+import com.tanmay.composegallery.data.model.FolderItem
 import com.tanmay.composegallery.data.model.PhotoItem
 
 @Dao
@@ -23,10 +23,10 @@ interface GalleryDao {
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAllFolders(folders: List<GalleryItem>)
+    suspend fun insertAllFolders(folders: List<FolderItem>)
 
     @Query("SELECT * FROM AllFolders")
-    suspend fun getAllFolders(): List<GalleryItem>
+    suspend fun getAllFolders(): List<FolderItem>
 
     @Query("DELETE FROM AllFolders")
     suspend fun deleteAllFolders()

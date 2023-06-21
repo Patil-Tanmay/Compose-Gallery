@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "AllFolders")
-data class GalleryItem(
+data class FolderItem(
     @PrimaryKey(autoGenerate = false) val folderId: String,
     val folderName: String,
     val imagesCount: Int

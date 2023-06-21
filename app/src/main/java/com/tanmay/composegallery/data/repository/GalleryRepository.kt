@@ -2,18 +2,18 @@ package com.tanmay.composegallery.data.repository
 
 import androidx.room.withTransaction
 import com.tanmay.composegallery.data.db.GalleryDatabase
-import com.tanmay.composegallery.data.model.GalleryItem
+import com.tanmay.composegallery.data.model.FolderItem
 import com.tanmay.composegallery.data.model.PhotoItem
-import com.tanmay.composegallery.data.paging.SystemPhotosDataSource
+import com.tanmay.composegallery.data.paging.SystemPhotosInterface
 import javax.inject.Inject
 
 class GalleryRepository @Inject constructor(
-    private val systemPhotosDataSource: SystemPhotosDataSource,
+    private val systemPhotosDataSource: SystemPhotosInterface,
     private val db: GalleryDatabase
 ) {
 
     suspend fun getPhotosFromSystem(): List<PhotoItem> {
-        val folderAndPhotos = systemPhotosDataSource.getPhotosFromSystem()
+        val folderAndPhotos = systemPhotosDataSource.getBothFOlderAndPhotos()
         db.withTransaction {
             db.galleryDao().deleteAllPhotos()
             db.galleryDao().insertAllPhotos(folderAndPhotos.photos)
@@ -21,8 +21,8 @@ class GalleryRepository @Inject constructor(
         return folderAndPhotos.photos
     }
 
-    suspend fun getFolderAndPhotos(): List<GalleryItem>{
-        val folderAndPhotos = systemPhotosDataSource.getPhotosFromSystem()
+    suspend fun getFolderAndPhotos(): List<FolderItem>{
+        val folderAndPhotos = systemPhotosDataSource.getBothFOlderAndPhotos()
         db.withTransaction {
             db.galleryDao().deleteAllPhotos()
             db.galleryDao().deleteAllFolders()

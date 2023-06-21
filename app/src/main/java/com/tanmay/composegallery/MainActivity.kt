@@ -91,13 +91,17 @@ class MainActivity : ComponentActivity() {
 
                         ShowPhotoStates.PermissionDenied -> {
                             permissionCheck.showPermissionDialog()
-                            ErrorScreen(this)
+                            ErrorScreen("Please Give Media Permission through settings and Restart the App !")
                         }
 
                         ShowPhotoStates.SplashScreen -> {
                             SplashScreen {
                                 viewModel.updatePhotoState(ShowPhotoStates.Loading)
                             }
+                        }
+
+                        ShowPhotoStates.EmptyScreen -> {
+                            ErrorScreen("No Images Found!")
                         }
                     }
                 }

@@ -49,7 +49,7 @@ class GalleryViewModel @Inject constructor(
             if (photos.isNotEmpty()) {
                 updatePhotoState(ShowPhotoStates.Gallery)
             } else {
-                updatePhotoState(ShowPhotoStates.PermissionDenied)
+                updatePhotoState(ShowPhotoStates.EmptyScreen)
             }
         } catch (e: Exception) {
             // Handle error
@@ -113,5 +113,6 @@ enum class ShowPhotoStates {
     Loading,
     Gallery,
     PermissionDenied,
+    EmptyScreen,
     SplashScreen
 }

@@ -1,6 +1,5 @@
 package com.tanmay.composegallery.data.model
 
-import android.net.Uri
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -16,6 +15,6 @@ data class PhotoItem(
 
 data class FolderAndPhotos(
     val photos: List<PhotoItem>,
-    val folders: List<GalleryItem>
+    val folders: List<FolderItem>
 )
 

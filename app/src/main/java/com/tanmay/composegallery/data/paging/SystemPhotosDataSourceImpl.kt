@@ -4,16 +4,21 @@ import android.content.ContentUris
 import android.content.Context
 import android.provider.MediaStore
 import com.tanmay.composegallery.data.model.FolderAndPhotos
-import com.tanmay.composegallery.data.model.GalleryItem
+import com.tanmay.composegallery.data.model.FolderItem
 import com.tanmay.composegallery.data.model.PhotoItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class SystemPhotosDataSource constructor(
+class SystemPhotosDataSourceImpl @Inject constructor(
     private val context: Context
-) {
+): SystemPhotosInterface {
 
-    suspend fun getPhotosFromSystem() =
+    override suspend fun getFolders(): List<FolderItem> {
+        return emptyList()
+    }
+
+    override suspend fun getBothFOlderAndPhotos(): FolderAndPhotos =
         withContext(Dispatchers.IO) {
             val projection =
                 arrayOf(
@@ -27,7 +32,7 @@ class SystemPhotosDataSource constructor(
             val query = MediaStore.Images.Media.EXTERNAL_CONTENT_URI.buildUpon().build()
 
             val images = mutableListOf<PhotoItem>()
-            val folderList = mutableListOf<GalleryItem>()
+            val folderList = mutableListOf<FolderItem>()
             context.contentResolver.query(query, projection, null, null, sortOrder)
                 ?.use { cursor ->
                     val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
@@ -62,4 +67,8 @@ class SystemPhotosDataSource constructor(
 
             FolderAndPhotos(photos = images, folders = folderList.distinct())
         }
+
+    override suspend fun getPhotosFromSystem(): List<PhotoItem> {
+        return emptyList<PhotoItem>()
+    }
 }

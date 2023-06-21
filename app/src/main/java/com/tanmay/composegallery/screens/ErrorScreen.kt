@@ -1,7 +1,5 @@
 package com.tanmay.composegallery.screens
 
-import android.app.Activity
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ErrorScreen(requiredActivity: Activity) {
+fun ErrorScreen(message: String) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -34,7 +32,7 @@ fun ErrorScreen(requiredActivity: Activity) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Please Give Media Permission through settings and Restart the App !",
+                    text = message,
                     style = MaterialTheme.typography.h6
                 )
             }
