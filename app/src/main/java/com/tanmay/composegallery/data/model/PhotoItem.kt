@@ -15,6 +15,6 @@ data class PhotoItem(
 
 data class FolderAndPhotos(
     val photos: List<PhotoItem>,
-    val folders: List<FolderItem>
+    val folders: List<Album>
 )
 

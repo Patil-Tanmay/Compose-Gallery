@@ -1,7 +1,7 @@
 package com.tanmay.composegallery.data.db
 
 import androidx.room.*
-import com.tanmay.composegallery.data.model.FolderItem
+import com.tanmay.composegallery.data.model.Album
 import com.tanmay.composegallery.data.model.PhotoItem
 
 @Dao
@@ -13,7 +13,7 @@ interface GalleryDao {
 //    ORDER BY id ASC
 
     @Query("SELECT * FROM AllPhotos LIMIT :limit OFFSET :offset")
-    suspend fun getPagedList(limit: Int, offset: Int): List<PhotoItem>
+    suspend fun getPagedListPhotos(limit: Int, offset: Int): List<PhotoItem>
 
     @Query("SELECT * FROM AllPhotos")
     suspend fun getAllPhotos(): List<PhotoItem>
@@ -23,12 +23,15 @@ interface GalleryDao {
 
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAllFolders(folders: List<FolderItem>)
+    suspend fun insertAllFolders(folders: List<Album>)
 
-    @Query("SELECT * FROM AllFolders")
-    suspend fun getAllFolders(): List<FolderItem>
+    @Query("SELECT * FROM AllAlbums")
+    suspend fun getAllFolders(): List<Album>
 
-    @Query("DELETE FROM AllFolders")
+    @Query("SELECT * FROM AllAlbums LIMIT :limit OFFSET :offset")
+    suspend fun getPagedAlbums(limit: Int, offset: Int): List<Album>
+
+    @Query("DELETE FROM AllAlbums")
     suspend fun deleteAllFolders()
 
 

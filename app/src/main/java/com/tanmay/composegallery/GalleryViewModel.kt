@@ -6,6 +6,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.tanmay.composegallery.data.db.GalleryDatabase
+import com.tanmay.composegallery.data.paging.AlbumPagingSource
 import com.tanmay.composegallery.data.paging.GalleryPagingSource
 import com.tanmay.composegallery.data.repository.GalleryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -47,7 +48,7 @@ class GalleryViewModel @Inject constructor(
         try {
             val photos = repository.getPhotosFromSystem()
             if (photos.isNotEmpty()) {
-                updatePhotoState(ShowPhotoStates.Gallery)
+                updatePhotoState(ShowPhotoStates.Albums)
             } else {
                 updatePhotoState(ShowPhotoStates.EmptyScreen)
             }
@@ -60,58 +61,37 @@ class GalleryViewModel @Inject constructor(
     }
 
 
-    /*suspend fun getPhotosFromSystem() {
-        withContext(Dispatchers.IO) {
-        Log.i("Threads", Thread.currentThread().name)
-            _isRefreshing.value = true
-            val projection =
-                arrayOf(MediaStore.Images.Media._ID, MediaStore.Images.Media.DISPLAY_NAME)
-            val sortOrder = "${MediaStore.Images.Media._ID} DESC"
-            val query = MediaStore.Images.Media.EXTERNAL_CONTENT_URI.buildUpon().build()
-
-            val images = mutableListOf<PhotoItem>()
-            app.applicationContext.contentResolver.query(query, projection, null, null, sortOrder)
-                ?.use { cursor ->
-                    val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-                    val nameColumn =
-                        cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
-                    while (cursor.moveToNext()) {
-                        val id = cursor.getLong(idColumn)
-                        val name = cursor.getString(nameColumn)
-                        val contentUri =
-                            ContentUris.withAppendedId(
-                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                                id
-                            )
-                        images.add(PhotoItem(uri = contentUri.toString(), displayName = name))
-                    }
-                }
-
-            _isRefreshing.value = when (true) {
-                images.isNotEmpty() -> {
-                    db.withTransaction {
-                        db.galleryDao().deleteAllPhotos()
-                        db.galleryDao().insertAllPhotos(images)
-                    }
-                    updatePhotoState(ShowPhotoStates.Gallery)
-                    false
-                }
-
-                else -> {
-                    updatePhotoState(ShowPhotoStates.PermissionDenied)
-                    false
-                }
+    fun getAllAlbums()= viewModelScope.launch {
+        try {
+            val albums = repository.getAllAlbums()
+            if (albums.isNotEmpty()) {
+                updatePhotoState(ShowPhotoStates.Albums)
+            } else {
+                updatePhotoState(ShowPhotoStates.EmptyScreen)
             }
+        } catch (e: Exception) {
+            // Handle error
+            updatePhotoState(ShowPhotoStates.PermissionDenied)
         }
-    }*/
+    }
 
 
+    fun getPagedAlbums() = Pager(
+        config = PagingConfig(
+            initialLoadSize = 60,
+            pageSize = 60,
+        ),
+        pagingSourceFactory = {
+            AlbumPagingSource(db)
+        }
+    ).flow.cachedIn(viewModelScope)
 
 }
 
 enum class ShowPhotoStates {
     Loading,
-    Gallery,
+    Albums,
+    AlbumPhotos,
     PermissionDenied,
     EmptyScreen,
     SplashScreen

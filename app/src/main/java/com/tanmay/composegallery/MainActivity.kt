@@ -2,7 +2,6 @@ package com.tanmay.composegallery
 
 import android.os.Bundle
 import android.util.Log
-import android.view.animation.OvershootInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
@@ -16,6 +15,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.tanmay.composegallery.screens.AlbumScreen
 import com.tanmay.composegallery.screens.ErrorScreen
 import com.tanmay.composegallery.utils.PermissionCheck
 import com.tanmay.composegallery.screens.PagingListScreen
@@ -23,7 +23,6 @@ import com.tanmay.composegallery.screens.PhotoDetailsScreen
 import com.tanmay.composegallery.screens.SplashScreen
 import com.tanmay.composegallery.ui.theme.ComposeGalleryTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -44,7 +43,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val showPhotoState by viewModel.showPhotos.collectAsState()
-                    val expandDetailsCard = remember { mutableStateOf(ExpandableState(0,false)) }
+                    val expandDetailsCard = remember { mutableStateOf(ExpandableState(0, false)) }
 
 
                     val backPressDispatcher =
@@ -54,7 +53,8 @@ class MainActivity : ComponentActivity() {
                         val callback = object : OnBackPressedCallback(true) {
                             override fun handleOnBackPressed() {
                                 if (expandDetailsCard.value.isExpanded) {
-                                    expandDetailsCard.value = expandDetailsCard.value.copy(isExpanded = false)
+                                    expandDetailsCard.value =
+                                        expandDetailsCard.value.copy(isExpanded = false)
                                 } else {
                                     // exit the app
                                     finish()
@@ -69,21 +69,24 @@ class MainActivity : ComponentActivity() {
                             LoadingIndicator()
                             if (permissionCheck.checkStoragePermission()) {
                                 LaunchedEffect(Unit) {
-                                    viewModel.getPhotosFromSystem()
+//                                    viewModel.getPhotosFromSystem()
+                                    viewModel.getAllAlbums()
                                 }
                             }
                         }
 
-                        ShowPhotoStates.Gallery -> {
+                        ShowPhotoStates.AlbumPhotos -> {
                             val photos = viewModel.getPhotos().collectAsLazyPagingItems()
-                            PagingListScreen(photos, viewModel) {index ->
-                                expandDetailsCard.value = expandDetailsCard.value.copy(index = index,isExpanded = true)
+                            PagingListScreen(photos, viewModel) { index ->
+                                expandDetailsCard.value =
+                                    expandDetailsCard.value.copy(index = index, isExpanded = true)
                             }
                             PhotoDetailsScreen(
                                 photos = photos,
 //                                viewModel = viewModel,
                                 onBackPressed = {
-                                    expandDetailsCard.value = expandDetailsCard.value.copy(isExpanded = false)
+                                    expandDetailsCard.value =
+                                        expandDetailsCard.value.copy(isExpanded = false)
                                 },
                                 expandableState = expandDetailsCard
                             )
@@ -103,6 +106,14 @@ class MainActivity : ComponentActivity() {
                         ShowPhotoStates.EmptyScreen -> {
                             ErrorScreen("No Images Found!")
                         }
+
+                        ShowPhotoStates.Albums -> {
+                            val albums = viewModel.getPagedAlbums().collectAsLazyPagingItems()
+
+                            AlbumScreen(albums = albums, onAlbumClick = {
+                                // navigate to album Photos
+                            })
+                        }
                     }
                 }
             }
@@ -112,10 +123,11 @@ class MainActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         Log.d("TAGG", "onResume: called")
-        if(viewModel.showPhotos.value == ShowPhotoStates.PermissionDenied) {
+        if (viewModel.showPhotos.value == ShowPhotoStates.PermissionDenied) {
             if (permissionCheck.checkStoragePermission()) {
 //            LaunchedEffect(Unit) {
-                viewModel.getPhotosFromSystem()
+//                viewModel.getPhotosFromSystem()
+                viewModel.getAllAlbums()
 //            }
             }
         }
@@ -126,9 +138,10 @@ class MainActivity : ComponentActivity() {
             when (true) {
                 check.all { it.value } -> {
                     lifecycleScope.launch {
-                        viewModel.getPhotosFromSystem()
+//                        viewModel.getPhotosFromSystem()
+                        viewModel.getAllAlbums()
                     }
-                    viewModel.updatePhotoState(ShowPhotoStates.Gallery)
+                    viewModel.updatePhotoState(ShowPhotoStates.AlbumPhotos)
                 }
 
                 else -> {

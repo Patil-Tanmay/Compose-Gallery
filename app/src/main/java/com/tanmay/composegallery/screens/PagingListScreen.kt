@@ -32,7 +32,7 @@ fun PagingListScreen(photos: LazyPagingItems<PhotoItem>, viewModel: GalleryViewM
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Gallery") },
+                title = { Text(text = "Photos") },
                 backgroundColor = MaterialTheme.colors.primary
             )
         },
@@ -91,15 +91,5 @@ fun ImageCard(
             contentScale = ContentScale.Crop
         )
 
-    }
-}
-
-@Composable
-fun LoadingIndicator() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator()
     }
 }
