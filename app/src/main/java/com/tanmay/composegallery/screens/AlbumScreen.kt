@@ -1,14 +1,16 @@
 package com.tanmay.composegallery.screens
 
 import android.net.Uri
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -20,8 +22,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
@@ -76,7 +77,9 @@ fun AlbumScreen(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalGlideComposeApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun AlbumCard(
     album: Album,
@@ -84,33 +87,35 @@ fun AlbumCard(
     onAlbumClick: (bucketId: Long) -> Unit
 ) {
     Card(
-        modifier = modifier.height(30.dp),
+        modifier = modifier.padding(5.dp,0.dp),
         shape = RoundedCornerShape(8.dp),
         elevation = 4.dp,
         onClick = {
             onAlbumClick(album.bucketId)
         }
     ) {
-        Row {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             // Image
             GlideImage(
                 model = Uri.parse(album.thumbnailPath),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.size(25.dp)
+                modifier = Modifier.size(60.dp)
             )
 
             Spacer(modifier = Modifier.width(8.dp))
 
             // Texts
-            Column {
+            Column(modifier = Modifier.padding(start = 0.dp, 0.dp, end = 5.dp, 10.dp).weight(1f)) {
                 Text(
                     text = album.displayName,
-                    style = TextStyle(fontWeight = FontWeight.Bold)
+                    style = TextStyle(fontWeight = FontWeight.Bold),
+                    modifier = modifier.basicMarquee().wrapContentWidth()
                 )
                 Text(
                     text = album.count.toString(),
-                    style = TextStyle(fontStyle = FontStyle.Italic)
+                    style = TextStyle(fontStyle = FontStyle.Italic),
+                    modifier = Modifier.wrapContentWidth()
                 )
             }
         }
