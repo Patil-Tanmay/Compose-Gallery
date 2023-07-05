@@ -1,6 +1,7 @@
 package com.tanmay.composegallery.screens
 
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -20,10 +21,15 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.tanmay.composegallery.GalleryViewModel
+import com.tanmay.composegallery.ShowPhotoStates
 import com.tanmay.composegallery.data.model.PhotoItem
 
 @Composable
-fun PagingListScreen(photos: LazyPagingItems<PhotoItem>, viewModel: GalleryViewModel = hiltViewModel(), onPhotoClick: (index : Int) -> Unit) {
+fun PagingListScreen(
+    photos: LazyPagingItems<PhotoItem>,
+    viewModel: GalleryViewModel = hiltViewModel(),
+    onPhotoClick: (index: Int) -> Unit
+) {
 
     val isRefreshing by viewModel.isRefreshing.collectAsState()
 
@@ -62,11 +68,13 @@ fun PagingListScreen(photos: LazyPagingItems<PhotoItem>, viewModel: GalleryViewM
                                 )
                             }
                         }
-                    }
-                }
+                    } // end lazy Vertical Grid
+
+                }// end of else
             }
         }
     )
+
 }
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalGlideComposeApi::class)

@@ -52,12 +52,32 @@ class MainActivity : ComponentActivity() {
                     LaunchedEffect(key1 = backPressDispatcher) {
                         val callback = object : OnBackPressedCallback(true) {
                             override fun handleOnBackPressed() {
-                                if (expandDetailsCard.value.isExpanded) {
-                                    expandDetailsCard.value =
-                                        expandDetailsCard.value.copy(isExpanded = false)
-                                } else {
-                                    // exit the app
-                                    finish()
+                                when (showPhotoState) {
+                                    ShowPhotoStates.Loading -> {
+                                        finish()
+                                    }
+
+                                    ShowPhotoStates.Albums -> finish()
+                                    ShowPhotoStates.AlbumPhotos -> {
+                                        if (expandDetailsCard.value.isExpanded) {
+                                            expandDetailsCard.value =
+                                                expandDetailsCard.value.copy(isExpanded = false)
+                                        } else {
+                                            viewModel.updatePhotoState(ShowPhotoStates.Albums)
+                                        }
+                                    }
+
+                                    ShowPhotoStates.PermissionDenied -> {
+                                        finish()
+                                    }
+
+                                    ShowPhotoStates.EmptyScreen -> {
+                                        finish()
+                                    }
+
+                                    ShowPhotoStates.SplashScreen -> {
+                                        finish()
+                                    }
                                 }
                             }
                         }
@@ -68,19 +88,24 @@ class MainActivity : ComponentActivity() {
                         ShowPhotoStates.Loading -> {
                             LoadingIndicator()
                             if (permissionCheck.checkStoragePermission()) {
-                                LaunchedEffect(Unit) {
+//                                LaunchedEffect(Unit) {
 //                                    viewModel.getPhotosFromSystem()
-                                    viewModel.getAllAlbums()
-                                }
+                                viewModel.getAllAlbums()
+//                                }
                             }
                         }
 
                         ShowPhotoStates.AlbumPhotos -> {
                             val photos = viewModel.getPhotos().collectAsLazyPagingItems()
-                            PagingListScreen(photos, viewModel) { index ->
-                                expandDetailsCard.value =
-                                    expandDetailsCard.value.copy(index = index, isExpanded = true)
-                            }
+                            PagingListScreen(photos, viewModel,
+                                onPhotoClick = { index ->
+                                    expandDetailsCard.value =
+                                        expandDetailsCard.value.copy(
+                                            index = index,
+                                            isExpanded = true
+                                        )
+                                }
+                            )
                             PhotoDetailsScreen(
                                 photos = photos,
 //                                viewModel = viewModel,
@@ -112,6 +137,7 @@ class MainActivity : ComponentActivity() {
 
                             AlbumScreen(albums = albums, onAlbumClick = {
                                 // navigate to album Photos
+                                viewModel.getPhotosFromAlbum(it)
                             })
                         }
                     }

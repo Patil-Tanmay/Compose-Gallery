@@ -21,6 +21,15 @@ class GalleryRepository @Inject constructor(
         return folderAndPhotos.photos
     }
 
+    suspend fun getPhotosFromAlbum(bucketId: Long): List<PhotoItem> {
+        val photos = systemPhotosDataSource.getPhotosFromSystem(bucketId)
+        db.withTransaction {
+            db.galleryDao().deleteAllPhotos()
+            db.galleryDao().insertAllPhotos(photos)
+        }
+        return photos
+    }
+
 
     suspend fun getAllAlbums(): List<Album>{
         val albums = systemPhotosDataSource.getAlbums()

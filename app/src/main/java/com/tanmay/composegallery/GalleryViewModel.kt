@@ -60,6 +60,23 @@ class GalleryViewModel @Inject constructor(
         }
     }
 
+    fun getPhotosFromAlbum(bucketId: Long) = viewModelScope.launch{
+        _isRefreshing.value = true
+        try {
+            val photos = repository.getPhotosFromAlbum(bucketId)
+            if (photos.isNotEmpty()) {
+                updatePhotoState(ShowPhotoStates.AlbumPhotos)
+            } else {
+                updatePhotoState(ShowPhotoStates.EmptyScreen)
+            }
+        } catch (e: Exception) {
+            // Handle error
+            updatePhotoState(ShowPhotoStates.PermissionDenied)
+        } finally {
+            _isRefreshing.value = false
+        }
+    }
+
 
     fun getAllAlbums()= viewModelScope.launch {
         try {

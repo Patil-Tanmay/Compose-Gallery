@@ -1,6 +1,7 @@
 package com.tanmay.composegallery.screens
 
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -144,6 +145,7 @@ fun PhotoDetailsScreen(
             )
         }
     }
+
 }
 
 class CirclePath(private val progress: Float, private val origin: Offset = Offset(0f, 0f)) : Shape {
