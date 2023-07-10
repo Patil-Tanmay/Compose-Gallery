@@ -1,3 +1,5 @@
 Added Folder System
 
 Improved permission checker
+
+Improved Performance
