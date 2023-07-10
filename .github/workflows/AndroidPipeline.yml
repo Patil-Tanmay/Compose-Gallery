@@ -17,7 +17,6 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '12'
-          distribution: 'adopt'
 
       - name: Build and package APK
         run: ./gradlew assembleRelease
@@ -36,6 +35,7 @@ jobs:
           release_name: Release ${{ github.sha }}
           draft: true
           body: ${{ steps.release-notes.outputs.notes }}
+          prerelease: false
 
       - name: Upload APK
         uses: actions/upload-release-asset@v1
