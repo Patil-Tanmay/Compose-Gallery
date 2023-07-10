@@ -29,21 +29,21 @@ jobs:
       - name: Create release draft
         id: create-release
         uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.sha }}
           release_name: Release ${{ github.sha }}
           draft: true
           body: ${{ steps.release-notes.outputs.notes }}
           prerelease: false
-
+        env:
+          GITHUB_TOKEN: ${{ secrets.YOUR_PAT }}
+        
       - name: Upload APK
         uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: app/build/outputs/apk/release/app-release.apk
           asset_name: MyApp-Release.apk
           asset_content_type: application/vnd.android.package-archive
+        env:
+          GITHUB_TOKEN: ${{ secrets.YOUR_PAT }}
