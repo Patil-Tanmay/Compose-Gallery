@@ -3,7 +3,7 @@ name: Generate Release and Upload APK
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build-and-release:
