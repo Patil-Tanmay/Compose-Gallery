@@ -17,6 +17,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '12'
+          distribution: 'adopt'
 
       - name: Build and package APK
         run: ./gradlew assembleRelease
